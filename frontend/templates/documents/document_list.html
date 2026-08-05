@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}My Documents | Vaultora{% endblock %}
+
+{% block content %}
+
+<section class="documents-page">
+
+<!-- Page Header -->
+
+<div class="section-header">
+
+    <div>
+        <h1>My Documents</h1>
+
+        <p>
+            Manage all your personal documents from one place.
+        </p>
+    </div>
+
+    <div>
+        <a
+            href="{% url 'documents:create' %}"
+            class="primary-button"
+        >
+            + Upload New Document
+        </a>
+    </div>
+
+</div>
+
+
+<!-- Search & Filter -->
+
+<div class="document-filters">
+
+    <form method="get">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ search_query }}"
+            placeholder="Search documents..."
+        >
+
+
+        <select name="category">
+
+            <option value="">
+                All Categories
+            </option>
+
+            {% for value, label in category_choices %}
+
+                <option
+                    value="{{ value }}"
+                    {% if selected_category == value %}
+                        selected
+                    {% endif %}
+                >
+                    {{ label }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <button type="submit">
+            Search
+        </button>
+
+
+        {% if search_query or selected_category %}
+
+            <a
+                href="{% url 'documents:list' %}"
+            >
+                Clear
+            </a>
+
+        {% endif %}
+
+    </form>
+
+</div>
+
+
+<!-- Search Result Information -->
+
+{% if search_query or selected_category %}
+
+    <p class="search-result-info">
+
+        Showing
+
+        <strong>
+            {{ documents.paginator.count }}
+        </strong>
+
+        document{{ documents.paginator.count|pluralize }}
+
+        {% if search_query %}
+
+            for
+
+            <strong>
+                "{{ search_query }}"
+            </strong>
+
+        {% endif %}
+
+
+        {% if selected_category %}
+
+            in
+
+            <strong>
+
+                {% for value, label in category_choices %}
+
+                    {% if value == selected_category %}
+                        {{ label }}
+                    {% endif %}
+
+                {% endfor %}
+
+            </strong>
+
+        {% endif %}
+
+    </p>
+
+{% endif %}
+
+
+<!-- Documents -->
+
+{% if documents %}
+
+    <div class="documents-grid">
+
+        {% for document in documents %}
+
+            <article class="document-card">
+
+
+                <!-- Document Preview -->
+
+                <div class="document-preview">
+
+                    {% if document.file %}
+
+                        {% with file_url=document.file.url|lower %}
+
+                            {% if ".jpg" in file_url or ".jpeg" in file_url or ".png" in file_url or ".gif" in file_url or ".webp" in file_url %}
+
+                                <img
+                                    src="{{ document.file.url }}"
+                                    alt="{{ document.title }}"
+                                >
+
+                            {% elif ".pdf" in file_url %}
+
+                                <div class="file-placeholder">
+                                    PDF
+                                </div>
+
+                            {% else %}
+
+                                <div class="file-placeholder">
+                                    FILE
+                                </div>
+
+                            {% endif %}
+
+                        {% endwith %}
+
+                    {% else %}
+
+                        <div class="file-placeholder">
+                            NO FILE
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Document Information -->
+
+                <div class="document-info">
+
+                    <h2>
+                        {{ document.title }}
+                    </h2>
+
+
+                    <p>
+
+                        <strong>
+                            {{ document.get_category_display }}
+                        </strong>
+
+                    </p>
+
+
+                    {% if document.description %}
+
+                        <p>
+                            {{ document.description|truncatechars:100 }}
+                        </p>
+
+                    {% endif %}
+
+
+                    <p>
+
+                        <small>
+
+                            Uploaded:
+
+                            {{ document.created_at|date:"d M Y, h:i A" }}
+
+                        </small>
+
+                    </p>
+
+                </div>
+
+
+                <!-- Document Actions -->
+
+                <div class="document-actions">
+
+                    <a
+                        href="{% url 'documents:detail' document.pk %}"
+                        class="primary-button"
+                    >
+                        View
+                    </a>
+
+
+                    <a
+                        href="{% url 'documents:update' document.pk %}"
+                        class="secondary-button"
+                    >
+                        Edit
+                    </a>
+
+
+                    <a
+                        href="{% url 'documents:delete' document.pk %}"
+                        class="danger-button"
+                    >
+                        Delete
+                    </a>
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- Pagination -->
+
+    {% if documents.has_other_pages %}
+
+        <nav class="pagination">
+
+            {% if documents.has_previous %}
+
+                <a
+                    href="?page={{ documents.previous_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if selected_category %}&category={{ selected_category|urlencode }}{% endif %}"
+                >
+                    ← Previous
+                </a>
+
+            {% endif %}
+
+
+            <span>
+
+                Page
+                {{ documents.number }}
+                of
+                {{ documents.paginator.num_pages }}
+
+            </span>
+
+
+            {% if documents.has_next %}
+
+                <a
+                    href="?page={{ documents.next_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if selected_category %}&category={{ selected_category|urlencode }}{% endif %}"
+                >
+                    Next →
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    {% endif %}
+
+
+{% else %}
+
+    <!-- Empty State -->
+
+    <div class="empty-state">
+
+        {% if search_query or selected_category %}
+
+            <h2>
+                No Matching Documents
+            </h2>
+
+            <p>
+                No documents match your current search or category filter.
+            </p>
+
+            <a
+                href="{% url 'documents:list' %}"
+                class="secondary-button"
+            >
+                Clear Filters
+            </a>
+
+        {% else %}
+
+            <h2>
+                No Documents Yet
+            </h2>
+
+            <p>
+                You haven't uploaded any documents yet.
+            </p>
+
+            <a
+                href="{% url 'documents:create' %}"
+                class="primary-button"
+            >
+                Upload Your First Document
+            </a>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}
+
+</section>
+
+{% endblock %}

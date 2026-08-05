@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    {% block title %}Vaultora{% endblock %}
+</title>
+
+</head>
+
+<body>
+
+<header>
+
+    <nav>
+
+        <a href="{% url 'home' %}">
+            <strong>Vaultora</strong>
+        </a>
+
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'dashboard:home' %}">
+                Dashboard
+            </a>
+
+            <a href="{% url 'documents:list' %}">
+                My Documents
+            </a>
+
+            <a href="{% url 'accounts:profile' %}">
+                Profile
+            </a>
+
+            <a href="{% url 'accounts:logout' %}">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'accounts:login' %}">
+                Login
+            </a>
+
+            <a href="{% url 'accounts:register' %}">
+                Register
+            </a>
+
+        {% endif %}
+
+    </nav>
+
+</header>
+
+<main>
+
+    {% if messages %}
+
+        <section>
+
+            {% for message in messages %}
+
+                <div>
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </section>
+
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+<footer>
+
+    <p>
+        &copy; {% now "Y" %} Vaultora. All rights reserved.
+    </p>
+
+</footer>
+
+</body>
+
+</html>

@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | Vaultora{% endblock %}
+
+{% block content %}
+
+<div class="profile-header">
+
+    <div
+        class="profile-avatar profile-avatar-clickable"
+        onclick="openProfilePhoto()"
+        role="button"
+        tabindex="0"
+        title="View profile photo"
+    >
+
+        {% if profile_user.profile_photo %}
+
+            <img
+                src="{{ profile_user.profile_photo.url }}"
+                alt="{{ profile_user.username }}"
+            >
+
+        {% else %}
+
+            {{ profile_user.username|first|upper }}
+
+        {% endif %}
+
+    </div>
+
+
+    <div>
+
+        <h1>My Profile</h1>
+
+        <p>
+            Manage your Vaultora account information.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="profile-card-header">
+
+    <div>
+
+        <h2>Account Information</h2>
+
+        <p>
+            Your basic account details.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="profile-details">
+
+    <div class="profile-detail">
+
+        <span class="profile-label">
+            Username
+        </span>
+
+        <strong>
+            {{ profile_user.username }}
+        </strong>
+
+    </div>
+
+
+    <div class="profile-detail">
+
+        <span class="profile-label">
+            First Name
+        </span>
+
+        <strong>
+
+            {% if profile_user.first_name %}
+                {{ profile_user.first_name }}
+            {% else %}
+                Not provided
+            {% endif %}
+
+        </strong>
+
+    </div>
+
+
+    <div class="profile-detail">
+
+        <span class="profile-label">
+            Last Name
+        </span>
+
+        <strong>
+
+            {% if profile_user.last_name %}
+                {{ profile_user.last_name }}
+            {% else %}
+                Not provided
+            {% endif %}
+
+        </strong>
+
+    </div>
+
+
+    <div class="profile-detail">
+
+        <span class="profile-label">
+            Email
+        </span>
+
+        <strong>
+
+            {% if profile_user.email %}
+                {{ profile_user.email }}
+            {% else %}
+                Not provided
+            {% endif %}
+
+        </strong>
+
+    </div>
+
+
+    <div class="profile-detail">
+
+        <span class="profile-label">
+            Date Joined
+        </span>
+
+        <strong>
+            {{ profile_user.date_joined|date:"d M Y" }}
+        </strong>
+
+    </div>
+
+
+    <div class="profile-detail">
+
+        <span class="profile-label">
+            Last Login
+        </span>
+
+        <strong>
+
+            {% if profile_user.last_login %}
+
+                {{ profile_user.last_login|date:"d M Y, h:i A" }}
+
+            {% else %}
+
+                Not available
+
+            {% endif %}
+
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div class="profile-card-header">
+
+    <div>
+
+        <h2>Account Actions</h2>
+
+        <p>
+            Manage your account and documents.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="profile-actions">
+
+    <a
+        href="{% url 'accounts:profile_edit' %}"
+        class="primary-button"
+    >
+        Edit Profile
+    </a>
+
+
+    <a
+        href="{% url 'accounts:change_password' %}"
+        class="secondary-button"
+    >
+        Change Password
+    </a>
+
+
+    <a
+        href="{% url 'documents:list' %}"
+        class="secondary-button"
+    >
+        My Documents
+    </a>
+
+
+    <a
+        href="{% url 'documents:create' %}"
+        class="secondary-button"
+    >
+        Upload Document
+    </a>
+
+
+    <a
+        href="{% url 'dashboard' %}"
+        class="secondary-button"
+    >
+        Back to Dashboard
+    </a>
+
+</div>
+
+
+{% if profile_user.profile_photo %}
+
+<div
+    id="profilePhotoModal"
+    class="profile-photo-modal"
+    onclick="closeProfilePhoto(event)"
+>
+
+    <div class="profile-photo-modal-content">
+
+        <button
+            type="button"
+            class="profile-photo-close"
+            onclick="closeProfilePhoto()"
+            aria-label="Close"
+        >
+            &times;
+        </button>
+
+
+        <img
+            src="{{ profile_user.profile_photo.url }}"
+            alt="{{ profile_user.username }}"
+            class="profile-photo-large"
+        >
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<script>
+
+function openProfilePhoto() {
+
+    const modal = document.getElementById(
+        "profilePhotoModal"
+    );
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.add("active");
+
+    document.body.style.overflow = "hidden";
+}
+
+
+function closeProfilePhoto(event) {
+
+    if (
+        event &&
+        event.target &&
+        event.target.id !== "profilePhotoModal"
+    ) {
+        return;
+    }
+
+    const modal = document.getElementById(
+        "profilePhotoModal"
+    );
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.remove("active");
+
+    document.body.style.overflow = "";
+}
+
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key === "Escape") {
+
+            const modal = document.getElementById(
+                "profilePhotoModal"
+            );
+
+            if (
+                modal &&
+                modal.classList.contains("active")
+            ) {
+                closeProfilePhoto();
+            }
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}
+

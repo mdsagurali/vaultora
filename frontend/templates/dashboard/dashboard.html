@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Vaultora{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-section">
+
+<div class="section-header">
+
+    <div>
+        <h1>Dashboard</h1>
+
+        <p>
+            Welcome back, {{ request.user.username }}.
+            Manage your personal documents from one place.
+        </p>
+    </div>
+
+</div>
+
+
+<!-- Document Overview -->
+
+<section class="dashboard-section">
+
+    <div class="section-header">
+
+        <div>
+            <h2>Document Overview</h2>
+
+            <p>
+                Overview of your stored documents.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="stats-grid">
+
+        <article class="stat-card">
+
+            <span class="stat-label">
+                Total Documents
+            </span>
+
+            <strong class="stat-number">
+                {{ total_documents }}
+            </strong>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span class="stat-label">
+                Personal
+            </span>
+
+            <strong class="stat-number">
+                {{ personal_count }}
+            </strong>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span class="stat-label">
+                Education
+            </span>
+
+            <strong class="stat-number">
+                {{ education_count }}
+            </strong>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span class="stat-label">
+                Professional
+            </span>
+
+            <strong class="stat-number">
+                {{ professional_count }}
+            </strong>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span class="stat-label">
+                Certificates
+            </span>
+
+            <strong class="stat-number">
+                {{ certificate_count }}
+            </strong>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span class="stat-label">
+                Identity
+            </span>
+
+            <strong class="stat-number">
+                {{ identity_count }}
+            </strong>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- Recent Documents -->
+
+<section class="dashboard-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                Recent Documents
+            </h2>
+
+            <p>
+                Your latest uploaded documents.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'documents:list' %}"
+            class="secondary-button"
+        >
+            View All
+        </a>
+
+    </div>
+
+
+    {% if recent_documents %}
+
+        <div class="recent-documents">
+
+            {% for document in recent_documents %}
+
+                <article class="document-card">
+
+
+                    <!-- File Preview -->
+
+                    <div class="document-preview">
+
+                        {% if document.file %}
+
+                            {% with file_url=document.file.url|lower %}
+
+                                {% if ".jpg" in file_url or ".jpeg" in file_url or ".png" in file_url or ".gif" in file_url or ".webp" in file_url %}
+
+                                    <img
+                                        src="{{ document.file.url }}"
+                                        alt="{{ document.title }}"
+                                    >
+
+                                {% elif ".pdf" in file_url %}
+
+                                    <div class="file-placeholder">
+                                        <strong>
+                                            PDF
+                                        </strong>
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="file-placeholder">
+                                        <strong>
+                                            FILE
+                                        </strong>
+                                    </div>
+
+                                {% endif %}
+
+                            {% endwith %}
+
+                        {% else %}
+
+                            <div class="file-placeholder">
+                                <strong>
+                                    NO FILE
+                                </strong>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Document Information -->
+
+                    <div class="document-info">
+
+                        <h3>
+                            {{ document.title }}
+                        </h3>
+
+
+                        <p>
+                            <strong>
+                                {{ document.get_category_display }}
+                            </strong>
+                        </p>
+
+
+                        {% if document.description %}
+
+                            <p>
+                                {{ document.description|truncatechars:80 }}
+                            </p>
+
+                        {% endif %}
+
+
+                        <small>
+
+                            Uploaded
+                            {{ document.created_at|date:"d M Y, h:i A" }}
+
+                        </small>
+
+                    </div>
+
+
+                    <!-- Action -->
+
+                    <div class="document-action">
+
+                        <a
+                            href="{% url 'documents:detail' document.pk %}"
+                            class="primary-button"
+                        >
+                            View
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h3>
+                No Documents Yet
+            </h3>
+
+            <p>
+                You haven't uploaded any documents yet.
+            </p>
+
+            <a
+                href="{% url 'documents:create' %}"
+                class="primary-button"
+            >
+                Upload Your First Document
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- Quick Actions -->
+
+<section class="dashboard-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h2>
+                Quick Actions
+            </h2>
+
+            <p>
+                Quickly access common Vaultora actions.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div>
+
+        <p>
+
+            <a
+                href="{% url 'documents:create' %}"
+                class="primary-button"
+            >
+                + Upload New Document
+            </a>
+
+        </p>
+
+
+        <p>
+
+            <a
+                href="{% url 'documents:list' %}"
+                class="secondary-button"
+            >
+                View My Documents
+            </a>
+
+        </p>
+
+
+        <p>
+
+            <a
+                href="{% url 'accounts:profile' %}"
+                class="secondary-button"
+            >
+                My Profile
+            </a>
+
+        </p>
+
+    </div>
+
+</section>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account | Vaultora{% endblock %}
+
+{% block content %}
+
+<h1>Create your Vaultora account</h1>
+
+<p>
+    Create an account to access your private document vault.
+</p>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    <div>
+        <label for="{{ form.username.id_for_label }}">
+            Username
+        </label>
+
+        {{ form.username }}
+
+        {{ form.username.errors }}
+    </div>
+
+    <br>
+
+    <div>
+        <label for="{{ form.first_name.id_for_label }}">
+            First Name
+        </label>
+
+        {{ form.first_name }}
+
+        {{ form.first_name.errors }}
+    </div>
+
+    <br>
+
+    <div>
+        <label for="{{ form.last_name.id_for_label }}">
+            Last Name
+        </label>
+
+        {{ form.last_name }}
+
+        {{ form.last_name.errors }}
+    </div>
+
+    <br>
+
+    <div>
+        <label for="{{ form.email.id_for_label }}">
+            Email
+        </label>
+
+        {{ form.email }}
+
+        {{ form.email.errors }}
+    </div>
+
+    <br>
+
+    <div>
+        <label for="{{ form.password1.id_for_label }}">
+            Password
+        </label>
+
+        {{ form.password1 }}
+
+        {{ form.password1.errors }}
+    </div>
+
+    <br>
+
+    <div>
+        <label for="{{ form.password2.id_for_label }}">
+            Confirm Password
+        </label>
+
+        {{ form.password2 }}
+
+        {{ form.password2.errors }}
+    </div>
+
+    <br>
+
+    <button type="submit">
+        Create Account
+    </button>
+
+</form>
+
+<p>
+    Already have an account?
+
+    <a href="{% url 'accounts:login' %}">
+        Login
+    </a>
+</p>
+
+{% endblock %}

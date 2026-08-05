@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Document | Vaultora{% endblock %}
+
+{% block content %}
+
+<h1>Upload Document</h1>
+
+<p>
+    Store a personal document securely in Vaultora.
+</p>
+
+<form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    {% for field in form %}
+
+        <div>
+
+            <label for="{{ field.id_for_label }}">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% if field.errors %}
+                <div>
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+
+            {% if field.help_text %}
+                <small>
+                    {{ field.help_text }}
+                </small>
+            {% endif %}
+
+        </div>
+
+        <br>
+
+    {% endfor %}
+
+    <button type="submit">
+        Upload Document
+    </button>
+
+</form>
+
+<br>
+
+<a href="/">
+    Back to Home
+</a>
+
+{% endblock %}

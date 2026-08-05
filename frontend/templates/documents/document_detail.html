@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}{{ document.title }} | Vaultora{% endblock %}
+
+{% block content %}
+
+<div class="document-detail">
+
+
+<div class="document-detail-header">
+
+    <div>
+        <h1>{{ document.title }}</h1>
+
+        <p>
+            {{ document.get_category_display }}
+        </p>
+    </div>
+
+    <div>
+        <a href="{% url 'documents:list' %}">
+            ← Back to Documents
+        </a>
+    </div>
+
+</div>
+
+
+<hr>
+
+
+<div class="document-preview">
+
+    {% if document.file %}
+
+        <img
+            src="{{ document.file.url }}"
+            alt="{{ document.title }}"
+            style="max-width: 100%; height: auto;"
+        >
+
+    {% else %}
+
+        <p>
+            No preview available.
+        </p>
+
+    {% endif %}
+
+</div>
+
+
+<hr>
+
+
+<div class="document-information">
+
+    <h2>Document Information</h2>
+
+    <p>
+        <strong>Title:</strong>
+        {{ document.title }}
+    </p>
+
+    <p>
+        <strong>Category:</strong>
+        {{ document.get_category_display }}
+    </p>
+
+    {% if document.description %}
+
+        <p>
+            <strong>Description:</strong>
+            {{ document.description }}
+        </p>
+
+    {% endif %}
+
+    <p>
+        <strong>Uploaded:</strong>
+        {{ document.created_at|date:"d M Y, h:i A" }}
+    </p>
+
+    <p>
+        <strong>Last Updated:</strong>
+        {{ document.updated_at|date:"d M Y, h:i A" }}
+    </p>
+
+</div>
+
+
+<hr>
+
+
+<div class="document-actions">
+
+    {% if document.file %}
+
+        <a
+            href="{{ document.file.url }}"
+            download
+        >
+            Download
+        </a>
+
+    {% endif %}
+
+    <a
+        href="{% url 'documents:update' document.pk %}"
+    >
+        Edit
+    </a>
+
+    <a
+        href="{% url 'documents:delete' document.pk %}"
+    >
+        Delete
+    </a>
+
+    <a
+        href="{% url 'documents:list' %}"
+    >
+        Back to Documents
+    </a>
+
+</div>
+
+
+</div>
+
+{% endblock %}
